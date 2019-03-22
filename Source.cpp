@@ -1,12 +1,39 @@
+/*
+	Tetris made by TheAceKlepto
+	using the olcPixelGameEngine: https://github.com/OneLoneCoder/olcPixelGameEngine
+
+	olcPixelGameEngine VIDEO: https://www.youtube.com/watch?v=kRH6oJLFYxY
+
+	adapted from the tetris video OneLoneCoder did using the command prompt
+	
+	Tetris VIDEO: https://www.youtube.com/watch?v=8OK8_tHeCIA
+
+	With the help of a friendly discord user in the OLC discord whom I can't remember,
+	they provided me with the code from the video, but implemented using the olcConsoleGameEngine: 
+	https://github.com/OneLoneCoder/videos/blob/master/olcConsoleGameEngine.h.
+
+	olcConsoleGameEngine VIDEO: https://www.youtube.com/watch?v=cWc0hgYwZyc
+
+	This saved me a lot of time on my part converting the code from when I followed the video way back when.
+	They also made the score, gameover screen & logic for the gameover screen.
+	Huge shoutout to them, and I apologize that I have a horrible memory and cannot remember their username.
+
+	Discord:
+	TheAceKlepto#4273
+
+	Subscribe to OneLoneCoder: https://www.youtube.com/channel/UC-yuWVUplUJZvieEligKBkA
+	OLC is by far the best C++(one of the best programmers in general) programmer on youtube, and has fantastic videos.
+*/
+
 #define OLC_PGE_APPLICATION
 #include "olcPixelGameEngine.h"
 #include <thread>
 #include <vector>
 #include <ctime>
 
+//Big yikes on the namespace, promise I was gonna change later
 using namespace std;
 
-// Override base class with your custom functionality
 class Tetris : public olc::PixelGameEngine
 {
 public:
@@ -17,8 +44,9 @@ public:
 
 private:
 	//Game Assests
+
+	//SPRITES
 	olc::Sprite *tetrominoBlockColors;
-	//olc::Sprite *tetromino;
 	olc::Sprite *background;
 	olc::Sprite *blockColor;
 	
@@ -34,15 +62,15 @@ private:
 	olc::Sprite *Blank = new olc::Sprite(16, 16);
 	olc::Sprite *oldBlockColors;
 
-	//Tetromino Assets
-	int colorSelector = 0;
-	int nCurrentPiece = 0;
-
-	//Game Assets
+	//FIELD
 	wstring tetromino[7];
 	int nFieldWidth = 12;
 	int nFieldHeight = 20;
 	unsigned char *pField = nullptr;
+	
+	//Tetromino Assets
+	int colorSelector = 0;
+	int nCurrentPiece = 0;
 
 	olc::Sprite *screen = new olc::Sprite[ScreenWidth() * ScreenHeight()];
 
@@ -53,7 +81,7 @@ private:
 	int nPieceCount = 0;
 	int nScore = 0;
 
-	int nCurrentX = nFieldWidth / 4;		//nFieldWidth / 3
+	int nCurrentX = nFieldWidth / 3;
 	int nCurrentY = 0;
 	int nCurrentRotation = 0;
 
@@ -87,8 +115,6 @@ public:
 
 		background = new olc::Sprite("tetrisBorder.png");
 		DrawSprite(32, 16, background, 0);
-
-
 
 		//INITIALIZE TETROMINO PALLETE
 		tetrominoBlockColors = new olc::Sprite("tetrisBlocks.png");
@@ -163,7 +189,7 @@ public:
 		// Choose First Piece
 		nCurrentPiece = rand() % 7;
 		nCurrentRotation = 0;
-		nCurrentX = nFieldWidth / 4;
+		nCurrentX = nFieldWidth / 3;
 		nCurrentY = -1;
 		
 		return true;
@@ -240,10 +266,8 @@ public:
 					nScore += 25;
 					if (!vLines.empty()) nScore += (1 << vLines.size()) * 100;
 
-
-
 					// Choose next Piece
-					nCurrentX = nFieldWidth / 4;
+					nCurrentX = nFieldWidth / 3;
 					nCurrentY = -1;
 					nCurrentRotation = 0;
 					newTetromino();
@@ -297,24 +321,18 @@ public:
 							DrawSprite((2 + nCurrentX + px) * 16, (2 + nCurrentY + py) * 16, blockColor, 0);
 			}
 
-
-
-
-
 			// Draw Score
 			DrawString(nFieldWidth + 22, 2, "Score: " + to_string(nScore), olc::WHITE);
 
 		}
+
 		//-----------TESTING PURPOSES ONLY-------------------\\
 		//DrawString(nFieldWidth + 200, 2, "Tranisition: " + to_string(transition), olc::WHITE);
 		//DrawString(nFieldWidth + 200, 200, "Piece: " + to_string(piece), olc::WHITE);
 
 		else
 		{
-			//PAUSE GAME
-
 			//GAME OVER
-
 			//Render Output
 			FillRect(0, 0, ScreenWidth(), ScreenHeight(), olc::Pixel(112, 128, 144));
 			DrawString(50, 80, "Game Over! Your Score is " + to_string(nScore), olc::WHITE);
@@ -333,8 +351,6 @@ public:
 				nCurrentX = nFieldWidth / 3;
 				nCurrentY = -1;
 
-
-
 				nSpeed = 20;
 				nSpeedCounter = 0;
 				bForceDown = false;
@@ -343,14 +359,10 @@ public:
 				bGameOver = false;
 			}
 
-
-
-
 			if (GetKey(olc::Key::ESCAPE).bPressed)
 				return false;
 		}
 	}
-
 
 	//CREATE TETROMINOS
 	void newTetromino()
@@ -411,7 +423,6 @@ public:
 
 int main()
 {
-
 	Tetris demo;
 	if (demo.Construct(512, 480, 2, 2))
 		demo.Start();
